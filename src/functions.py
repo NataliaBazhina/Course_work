@@ -2,6 +2,9 @@ import json
 
 
 def get_operations(name):
+    """
+    загружает список операций из файла
+    """
     with open(name) as f:
         return json.load(f)
 
