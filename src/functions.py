@@ -1,5 +1,4 @@
 import json
-from datetime import datetime
 
 
 def get_operations(name):
@@ -7,21 +6,29 @@ def get_operations(name):
         return json.load(f)
 
 
-operations = get_operations('operations.json') #в мэйн
-
-
-def sort_operations():
-    datetime_objects = [datetime.strptime(i, '%Y-%m-%d %H:%M:%S') for i in operations]
-    print(datetime_objects.sort(reverse=True))
 
 
 
+def sort_data(operations: list) -> list:
+    """
+    Принимает неотсортированный список операций клиента
+    Выводит список успешных операций, сортированных по дате
+    """
+    dict_operation = []
+    for element in operations:
+        if 'date' not in element.keys() or 'from' not in element.keys() or 'to' not in element.keys():
+            continue
+        if element not in dict_operation and element.get('state', None) == "EXECUTED":
+            dict_operation.append(element)
+
+    return sorted(dict_operation, key=lambda data: data["date"], reverse=True)[:5]
 
 
-
-#date_list = []
-#for element in operations:
-#   if element.get('date') is not None and element.get('state') == "EXECUTED":
-#      element['date'] = datetime.fromisoformat(element['date'])
-#      date_list.append(element)
-#return date_list
+def date_prettify(date: str) -> str:
+    """
+    Получает дату из списка
+    Выводит преобразованную дату в виде ДД.ММ.ГГГГ
+    """
+    date_new = date[0:10].split('-')
+    date_new = ".".join(ch for ch in reversed(date_new))
+    return date_new
